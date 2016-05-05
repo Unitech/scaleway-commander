@@ -1,6 +1,6 @@
 {
   "name": "scaleway-commander",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "",
   "main": "index.js",
   "bin": {
@@ -9,16 +9,34 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "dependencies" : {
-    "request" : "*",
-    "commander" : "*",
-    "cli-table2" : "*",
-    "inquirer" : "*",
-    "chalk" : "*",
-    "ssh-exec" : "*",
-    "ora" : "*",
-    "clear" :"*"
+  "dependencies": {
+    "request": "*",
+    "blessed": "*",
+    "blessed-contrib": "*",
+    "commander": "*",
+    "cli-table2": "*",
+    "inquirer": "*",
+    "chalk": "*",
+    "ssh-exec": "*",
+    "ora": "*",
+    "clear": "*",
+    "async": "*",
+    "cli-spinners": "*"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "bundledDependencies": [
+    "request",
+    "blessed",
+    "blessed-contrib",
+    "commander",
+    "cli-table2",
+    "inquirer",
+    "chalk",
+    "ssh-exec",
+    "ora",
+    "clear",
+    "async",
+    "cli-spinners"
+  ]
 }
