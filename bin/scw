@@ -2,16 +2,17 @@
 
 // https://developer.scaleway.com/#snapshots-snapshots
 
-var program  = require('commander');
-var fs       = require('fs');
-var path     = require('path');
-var package  = require('../package.json');
-var Scaleway = require('../index.js');
-var sshexec  = require('ssh-exec');
-var Icli     = require('../interactive-cli.js');
-var chalk    = require('chalk');
+var program     = require('commander');
+var fs          = require('fs');
+var path        = require('path');
+var package     = require('../package.json');
+var Scaleway    = require('../index.js');
+var sshexec     = require('ssh-exec');
+var Icli        = require('../interactive-cli.js');
+var chalk       = require('chalk');
 var cliSpinners = require('cli-spinners');
-var async = require('async');
+var async       = require('async');
+var multissh    = require('multissh');
 
 var conf_file = path.join(process.env.HOME, '.scaleway');
 var token     = '';
@@ -99,61 +100,22 @@ program
   });
 
 program
-  .command('sshall <cmd> [parallel]')
+  .command('multissh <cmd> [parallel]')
   .description('ssh to each online host and execute <cmd>')
   .action(function(cmd, parallel) {
 
-    async.forEachLimit(scaleway.server_list, parallel || 1, function(server, next) {
-      if (server.state == 'running') {
-        console.log('Execting command "%s" on server [%s]', cmd, server.hostname);
-        var stream = sshexec("PS1='$ ' source ~/.bashrc;" + cmd, 'root@' + server.public_ip.address);
-
-        stream.on('data', function(dt) {
-          console.log(dt.toString());
-        });
-
-        stream.on('error', function(e) {
-          console.log('Got error', e.message || e);
-        });
-
-        stream.on('exit', function() {
-          next();
-        });
-      }
-      else next();
-
-    }, function() {
-      console.log(chalk.green.bold('Done.'));
-      process.exit(0);
-    });
-  });
-
-
-program
-  .command('issh <cmd>')
-  .description('ssh to each online host and execute <cmd>')
-  .action(function(cmd, parallel) {
-
-    var multissh = require('../window-mode.js');
-
-    /**
-     * server_list []
-     * [{
-     *    .hostname
-     *
-     */
     var server_list = [];
 
     scaleway.server_list.forEach(function(server) {
-      //if (server.status != 'running') return;
-
+      if (server.state != 'running') return;
       server_list.push({
         ip : server.public_ip.address,
         hostname : server.hostname,
         user : 'root'
       });
     });
-    multissh.start(server_list, cmd);
+
+    multissh.start(cmd, server_list);
   });
 
 program
