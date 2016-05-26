@@ -1,6 +1,6 @@
 {
   "name": "scaleway-commander",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "",
   "main": "index.js",
   "bin": {
@@ -21,7 +21,7 @@
     "async": "*",
     "cli-spinners": "*",
     "moment" : "*",
-    "multissh" : "*"
+    "multissh" : "^1"
   },
   "author": "",
   "license": "ISC",
